@@ -1,0 +1,17 @@
+:root {
+  --color-212592: #212592;
+  --color-ffd33: #ffd333;
+  --color-47ad24: #47ad24;
+  --color-e5e2e: #e52e2e;
+  --color-828599: #828599;
+  --color-3d464d: #3d464d;
+}
+.green {
+  background-color: var(--color-47ad24);
+}
+.red {
+  background-color: var(--color-47ad24);
+}
+.quill {
+  background-color: white;
+}
