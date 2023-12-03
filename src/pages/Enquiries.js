@@ -3,7 +3,7 @@ import { Table } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { BiEdit } from 'react-icons/bi';
-import { AiFillDelete } from 'react-icons/ai';
+import { AiFillDelete, AiOutlineEye } from 'react-icons/ai';
 import { getEnquiries } from '../features/enquiry/enquirySlice';
 
 const columns = [
@@ -50,8 +50,18 @@ function Enquiries() {
       mobile: enquiryState[i].mobile,
       status: (
         <>
-          <select name="" className="w-full p-2">
-            <option value="">Set Status</option>
+          <select
+            name=""
+            defaultValue={
+              enquiryState[i].status ? enquiryState[i].status : 'Submitted'
+            }
+            className="w-full p-2"
+            // onChange={(e)=> }
+          >
+            <option value="Submitted">Submitted</option>
+            <option value="Contacted">Contacted</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Resolved">Resolved</option>
           </select>
         </>
       ),
@@ -59,12 +69,19 @@ function Enquiries() {
       action: (
         <div className="flex gap-2 mb-2">
           <Link to="/" className="text-red">
+            <AiOutlineEye />
+          </Link>
+          <Link to="/" className="text-red">
             <AiFillDelete />
           </Link>
         </div>
       ),
     });
   }
+
+  // const setEnquryStatus = (e,i)=>{
+  //   const data ={id:i}
+  // }
   return (
     <div>
       <div>

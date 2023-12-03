@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import { Layout, Menu, Button, theme } from 'antd';
-import avater from '../assests/avatar4.png';
+import avater from '../assets/avatar8.png';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {
