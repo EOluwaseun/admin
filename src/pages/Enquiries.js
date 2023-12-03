@@ -1,10 +1,16 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Table } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { BiEdit } from 'react-icons/bi';
 import { AiFillDelete, AiOutlineEye } from 'react-icons/ai';
-import { getEnquiries } from '../features/enquiry/enquirySlice';
+import {
+  deleteAEnquiry,
+  getEnquiries,
+  resetState,
+  updateAEnquiry,
+} from '../features/enquiry/enquirySlice';
+import CustomModal from '../componets/CustomModal';
 
 const columns = [
   {
@@ -36,7 +42,19 @@ const columns = [
 
 function Enquiries() {
   const dispatch = useDispatch();
+  const [open, setOpen] = useState(false);
+  const [enquiryId, setEnquiryId] = useState(''); //initially empty
+
+  const showModal = (e) => {
+    setOpen(true);
+    setEnquiryId(e); //set Id into brand
+  };
+  const hideModal = () => {
+    setOpen(false);
+  };
+
   useEffect(() => {
+    dispatch(resetState());
     dispatch(getEnquiries());
   }, [dispatch]);
 
@@ -44,8 +62,8 @@ function Enquiries() {
   const data1 = [];
   for (let i = 0; i < enquiryState?.length; i++) {
     data1.push({
-      key: i,
-      name: enquiryState[i].title,
+      key: i + 1,
+      name: enquiryState[i].name,
       email: enquiryState[i].email,
       mobile: enquiryState[i].mobile,
       status: (
@@ -68,20 +86,34 @@ function Enquiries() {
 
       action: (
         <div className="flex gap-2 mb-2">
-          <Link to="/" className="text-red">
+          <Link
+            to={`/admin/enquiries/${enquiryState[i]._id}`}
+            className="text-red"
+          >
             <AiOutlineEye />
           </Link>
-          <Link to="/" className="text-red">
+          <button
+            onClick={() => showModal(enquiryState[i]._id)}
+            className="text-red"
+          >
             <AiFillDelete />
-          </Link>
+          </button>
         </div>
       ),
     });
   }
 
-  // const setEnquryStatus = (e,i)=>{
-  //   const data ={id:i}
-  // }
+  const setEnquryStatus = (e, i) => {
+    const data = { id: i, enqData: e };
+    dispatch(updateAEnquiry(data));
+  };
+  const deleteEnq = (e) => {
+    dispatch(deleteAEnquiry(e));
+    setOpen(false);
+    setTimeout(() => {
+      dispatch(getEnquiries());
+    }, 100);
+  };
   return (
     <div>
       <div>
@@ -89,6 +121,12 @@ function Enquiries() {
         <div>
           <Table columns={columns} dataSource={data1} />
         </div>
+        <CustomModal
+          open={open}
+          performAction={() => deleteEnq(enquiryId)}
+          hideModal={hideModal}
+          title="Are you sure you want to delete this enquiry"
+        />
       </div>{' '}
     </div>
   );
