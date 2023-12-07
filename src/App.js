@@ -22,6 +22,7 @@ import AddBrand from './pages/AddBrand';
 import AddProduct from './pages/AddProduct';
 import CouponList from './pages/CouponList';
 import AddCoupon from './pages/AddCoupon';
+import ViewEnq from './pages/ViewEnq';
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
           {/* index means slash admin */}
           <Route index element={<Dashboard />} />
           <Route path="enquiries" element={<Enquiries />} />
+          <Route path="enquiries/:id" element={<ViewEnq />} />
           <Route path="blog-list" element={<BlogList />} />
           <Route path="blog-category-list" element={<BlogcatList />} />
           <Route path="add-blogs" element={<AddBlog />} />
