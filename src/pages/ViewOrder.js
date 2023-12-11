@@ -44,31 +44,26 @@ function ViewOrder() {
   const dispatch = useDispatch();
   const location = useLocation();
   const userId = location.pathname.split('/')[3];
+  console.log(userId);
 
   useEffect(() => {
     dispatch(getOrderByUser(userId));
   }, [dispatch, userId]);
 
-  const orderState = useSelector((state) => state.auth.orderbyuser.products);
+  const orderState = useSelector((state) => state.auth.orderbyuser[0].products);
   console.log(orderState);
 
-  // useEffect(() => {
-  //   dispatch(getOrders()); //remeber to call it
-  // }, [dispatch]);
-
-  // const orderState = useSelector((state) => state.auth.orders);
   const data1 = [];
   for (let i = 0; i < orderState.length; i++) {
     data1.push({
       key: i + 1,
       name: orderState[i].product.title,
       brand: orderState[i].product.brand,
-      count: orderState[i].product.count,
+      count: orderState[i].count,
       amount: orderState[i].product.amount,
       color: orderState[i].product.color,
-      date: orderState[i].product.createdAt,
+      date: orderState[i].product.createdAt.substring(0, 10),
       // date: new Date(orderState[i].product.createdAt).toLocaleString(),
-
       action: (
         <div className="flex gap-2 mb-2">
           <Link to="/" className="text-red">

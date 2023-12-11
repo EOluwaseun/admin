@@ -45,15 +45,16 @@ function Orders() {
     data1.push({
       key: i + 1,
       name: orderState[i].orderby.firstname, // get orderby from orderstate, orderby is populated in order state
-      product: <Link to={`/admin/orders/${orderState[i].orderby._id}`}>View Orders</Link>,
+      product: (
+        <Link to={`/admin/orders/${orderState[i].orderby._id}`}>
+          View Orders
+        </Link>
+      ),
       amount: orderState[i].paymentIntent.amount, // need to figure this out amount!
       date: new Date(orderState[i].createdAt).toLocaleString(),
-
       action: (
         <div className="flex gap-2 mb-2">
-          <Link to='/'
-            className="text-red"
-          >
+          <Link to="/" className="text-red">
             <BiEdit />
           </Link>
           <Link to="/" className="text-red">
