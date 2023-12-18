@@ -74,7 +74,9 @@ function Enquiries() {
               enquiryState[i].status ? enquiryState[i].status : 'Submitted'
             }
             className="w-full p-2"
-            // onChange={(e)=> }
+            onChange={(e) =>
+              setEnquryStatus(e.target.value, enquiryState[i]._id)
+            }
           >
             <option value="Submitted">Submitted</option>
             <option value="Contacted">Contacted</option>
@@ -88,13 +90,13 @@ function Enquiries() {
         <div className="flex gap-2 mb-2">
           <Link
             to={`/admin/enquiries/${enquiryState[i]._id}`}
-            className="text-red"
+            className="text-red-500"
           >
             <AiOutlineEye />
           </Link>
           <button
             onClick={() => showModal(enquiryState[i]._id)}
-            className="text-red"
+            className="text-red-500"
           >
             <AiFillDelete />
           </button>
@@ -105,6 +107,7 @@ function Enquiries() {
 
   const setEnquryStatus = (e, i) => {
     const data = { id: i, enqData: e };
+    // update d data
     dispatch(updateAEnquiry(data));
   };
   const deleteEnq = (e) => {
