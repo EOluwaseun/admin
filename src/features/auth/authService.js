@@ -20,8 +20,20 @@ const getOrders = async () => {
   return response.data;
 };
 
+//get single order
+const getOrder = async (id) => {
+  const response = await axios.post(
+    `${base_url}user/getorderbyuser/${id}`,
+    '',
+    config
+  ); // config means authorised user
+
+  return response.data;
+};
+
 const authService = {
   login,
   getOrders,
+  getOrder,
 };
 export default authService;

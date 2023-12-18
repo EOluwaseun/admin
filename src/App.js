@@ -23,6 +23,10 @@ import AddProduct from './pages/AddProduct';
 import CouponList from './pages/CouponList';
 import AddCoupon from './pages/AddCoupon';
 import ViewEnq from './pages/ViewEnq';
+<<<<<<< HEAD
+=======
+import ViewOrder from './pages/ViewOrder';
+>>>>>>> 7a6f35f748345dda2b9e2b96b94755679dfd50ea
 
 function App() {
   return (
@@ -46,6 +50,7 @@ function App() {
           <Route path="coupon" element={<AddCoupon />} />
           <Route path="coupon/:id" element={<AddCoupon />} />
           <Route path="orders" element={<Orders />} />
+          <Route path="orders/:id" element={<ViewOrder />} />
           <Route path="customers" element={<Customers />} />
           <Route path="color-list" element={<ColorList />} />
           <Route path="color" element={<AddColor />} />
