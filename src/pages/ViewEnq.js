@@ -1,28 +1,3 @@
-<<<<<<< HEAD
-import React,{useEffect} from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router';
-import { getAEnquiry } from '../features/enquiry/enquirySlice';
-
-
-function ViewEnq() {
-  const location = useLocation()
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
-  const getEnqId = location.pathname.split('/')[3]
-  const enqState = useSelector((state)=>state.enquiry)
-const {enqName,enqEmail,enMobile,enqComment, enqStatus} = enqState
-
-useEffect(()=>{
-  dispatch(getAEnquiry(getEnqId))
-},[dispatch, getEnqId])
-
-// go back
-const goBack =()=>{
-  navigate(-1)
-}
-return <div>ViewEnq</div>;
-=======
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router';
@@ -32,6 +7,9 @@ import {
   updateAEnquiry,
 } from '../features/enquiry/enquirySlice';
 import { BiArrowBack } from 'react-icons/bi';
+
+// "gitHead": "19fa58d527ae74f2b6baa0867463eea1d290f9a5"
+
 
 function ViewEnq() {
   const location = useLocation();
@@ -116,7 +94,6 @@ function ViewEnq() {
       </div>
     </div>
   );
->>>>>>> 7a6f35f748345dda2b9e2b96b94755679dfd50ea
 }
 
 export default ViewEnq;

@@ -23,10 +23,9 @@ import AddProduct from './pages/AddProduct';
 import CouponList from './pages/CouponList';
 import AddCoupon from './pages/AddCoupon';
 import ViewEnq from './pages/ViewEnq';
-<<<<<<< HEAD
-=======
 import ViewOrder from './pages/ViewOrder';
->>>>>>> 7a6f35f748345dda2b9e2b96b94755679dfd50ea
+
+
 
 function App() {
   return (

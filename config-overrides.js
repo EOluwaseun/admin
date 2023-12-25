@@ -1,8 +1,3 @@
-// export const resolve = {
-//   fallback: { path: require.resolve('path-browserify') },
-// };
-
-// import { ProvidePlugin } from 'webpack';
 const webpack = require('webpack');
 
 module.exports = function override(config) {
