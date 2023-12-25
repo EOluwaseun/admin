@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup'; //validation
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,7 +12,7 @@ import { Select } from 'antd';
 import Dropzone from 'react-dropzone';
 import CustomInput from '../componets/CustomInput';
 import { delImg, uploadImg } from '../features/upload/uploadSlice';
-import { createProducts, resetState } from '../features/product/productSlice';
+import { createProducts, getAProduct, resetState } from '../features/product/productSlice';
 import { toast } from 'react-toastify';
 
 let schema = Yup.object().shape({
@@ -30,26 +30,61 @@ let schema = Yup.object().shape({
 export default function AddProduct() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [color, setColor] = useState([]);
-  const [images, setImages] = useState([]);
-
-  useEffect(() => {
-    dispatch(getBrands());
-    dispatch(getProductCategories());
-    dispatch(getColors());
-    //formik.values.color = color; // set d value of color to d color state
-  }, [dispatch]);
-
+  const location = useLocation();
+  const getProductId = location.pathname.split('/')[3]
   const brandState = useSelector((state) => state.brand.brands);
   const pCatState = useSelector((state) => state.category.pCategories);
   const pColorState = useSelector((state) => state.color.pColors);
   const imgState = useSelector((state) => state.upload.images); //this piacking the payload
   const newProduct = useSelector((state) => state.product);
-  const { isSuccess, isLoading, isError, createdProduct } = newProduct; // this is also picking from d store , so acces to all
+
+  const [color, setColor] = useState([]);
+  const [images, setImages] = useState([]);
+
+  
+
+  
+  const { isSuccess, 
+    isLoading, 
+    isError,
+    prodName,
+    prodDesc,
+    prodCategory,
+    prodImages,
+    prodPrice,
+    prodBrand,
+    prodTags,
+    prodColor,
+    prodQuantity,
+    updatedProduct, 
+    createdProduct } = newProduct; // this is also picking from d store , so acces to all
+
+    useEffect(() => {
+      if (getProductId !== undefined) {
+        dispatch(getAProduct(getProductId));
+        img.push(prodImages);
+      } else {
+        dispatch(resetState());
+      }
+    }, [getAProduct]);
+  
+    useEffect(() => {
+      dispatch(resetState())
+      dispatch(getBrands());
+      dispatch(getProductCategories());
+      dispatch(getColors());
+      //formik.values.color = color; // set d value of color to d color state
+    }, [dispatch]);
+
 
   useEffect(() => {
     if (isSuccess && createdProduct) {
       toast.success('Product Added Succesfully');
+    }
+    if (isSuccess && updatedProduct) {
+      toast.success('Product Updated Succesfully');
+      navigate('/admin/list-product'); //from admin go to list-product
+
     }
     if (isError) {
       toast.error('Something Wrong');
@@ -78,18 +113,22 @@ export default function AddProduct() {
     });
   });
   // console.log(img);
+  useEffect(() => {
+    formik.values.images = img;
+  }, [prodImages]);
 
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
-      title: '',
-      description: '',
-      price: '',
-      brand: '',
-      tags: '',
-      category: '',
-      color: '',
-      quantity: '',
-      images: '',
+      title: prodName || '',
+      description: prodDesc || '',
+      price: prodPrice || '',
+      brand: prodBrand || '',
+      tags: prodTags || '',
+      category: prodCategory || '',
+      color: prodColor || '',
+      quantity: prodQuantity || '',
+      images: prodImages || '',
     },
     validationSchema: schema,
     onSubmit: (values) => {
