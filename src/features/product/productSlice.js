@@ -40,7 +40,7 @@ export const updateAProduct = createAsyncThunk(
 
   async (productData, thunkApi) => {
     try {
-      return await productService.updateBlog(productData); // call it
+      return await productService.updateProduct(productData); // call it
     } catch (error) {
       return thunkApi.rejectWithValue(error);
     }
@@ -84,7 +84,6 @@ export const productSlice = createSlice({
         state.products = action.payload;
       })
 
-      
       .addCase(getProducts.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;

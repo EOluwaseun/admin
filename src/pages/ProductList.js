@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Table } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import { getProducts, resetState } from '../features/product/productSlice';
+import { deleteAProduct, getProducts, resetState } from '../features/product/productSlice';
 import { BiEdit } from 'react-icons/bi';
 import { AiFillDelete } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
+import CustomModal from '../componets/CustomModal';
 
 const columns = [
   {
@@ -44,6 +45,18 @@ const columns = [
 ];
 
 function ProductList() {
+  const [open, setOpen] = useState(false)
+  const [productId, setProductId] = useState('')
+
+  const showModal = (e)=>{
+    setOpen(true)
+    setProductId(e)
+  }
+
+  const hideModal = ()=>{
+    setOpen(false)
+  }
+
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(resetState());
@@ -63,17 +76,27 @@ function ProductList() {
       price: `$ ${productState[i].price}`,
       action: (
         <div className="flex gap-2 mb-2">
-          <Link to="/" className="text-red">
+          <Link to={`/admin/product/${productState[i]._id}`} className="text-red">
             <BiEdit />
           </Link>
-          <Link to="/" className="text-red">
-            <AiFillDelete />
-          </Link>
+          <button
+            onClick={()=> showModal(productState[i]._id)}
+            className='border-0 transparent'
+          >
+            <AiFillDelete className="text-red"/>
+          </button>
         </div>
       ),
     });
   }
-  console.log(data1);
+  // console.log(data1);
+  const deleteAction = (e)=>{
+    setOpen(false)
+    dispatch(deleteAProduct(e))
+    setTimeout(()=>{
+      dispatch(getProducts())
+    },100)
+  }
 
   return (
     <div>
@@ -82,6 +105,12 @@ function ProductList() {
         <div>
           <Table columns={columns} dataSource={data1} />
         </div>
+        <CustomModal
+          open={open}
+          performAction={()=> deleteAction(productId)}
+          hideModal={hideModal}
+          title="Are you sure you want to delete this product"
+        />
       </div>{' '}
     </div>
   );

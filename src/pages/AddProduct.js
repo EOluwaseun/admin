@@ -8,11 +8,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getBrands } from '../features/brand/brandSlice';
 import { getProductCategories } from '../features/pcategory/pcategorySlice';
 import { getColors } from '../features/color/colorSlice';
-import { Select } from 'antd';
+import { Select} from 'antd';
 import Dropzone from 'react-dropzone';
 import CustomInput from '../componets/CustomInput';
 import { delImg, uploadImg } from '../features/upload/uploadSlice';
-import { createProducts, getAProduct, resetState } from '../features/product/productSlice';
+import {
+  createProducts,
+  getAProduct,
+  resetState,
+  updateAProduct,
+} from '../features/product/productSlice';
 import { toast } from 'react-toastify';
 
 let schema = Yup.object().shape({
@@ -31,51 +36,48 @@ export default function AddProduct() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const getProductId = location.pathname.split('/')[3]
+  const getProductId = location.pathname.split('/')[3];
+  const [colors, setColors] = useState([]);
+  // const [images, setImages] = useState([]);
+
+  useEffect(() => {
+    // dispatch(resetState());
+    dispatch(getBrands());
+    dispatch(getProductCategories());
+    dispatch(getColors());
+  }, [dispatch]);
+
   const brandState = useSelector((state) => state.brand.brands);
   const pCatState = useSelector((state) => state.category.pCategories);
   const pColorState = useSelector((state) => state.color.pColors);
   const imgState = useSelector((state) => state.upload.images); //this piacking the payload
   const newProduct = useSelector((state) => state.product);
-
-  const [color, setColor] = useState([]);
-  const [images, setImages] = useState([]);
-
-  
-
-  
-  const { isSuccess, 
-    isLoading, 
+  // console.log(pColorState);
+  const {
+    isSuccess,
+    isLoading,
     isError,
     prodName,
+    prodImages,
+    updatedProduct,
     prodDesc,
     prodCategory,
-    prodImages,
     prodPrice,
-    prodBrand,
-    prodTags,
-    prodColor,
     prodQuantity,
-    updatedProduct, 
-    createdProduct } = newProduct; // this is also picking from d store , so acces to all
+    prodColor,
+    prodTags,
+    prodBrand,
+    createdProduct,
+  } = newProduct; // this is also picking from d store , so acces to all
 
-    useEffect(() => {
-      if (getProductId !== undefined) {
-        dispatch(getAProduct(getProductId));
-        img.push(prodImages);
-      } else {
-        dispatch(resetState());
-      }
-    }, [getAProduct]);
-  
-    useEffect(() => {
-      dispatch(resetState())
-      dispatch(getBrands());
-      dispatch(getProductCategories());
-      dispatch(getColors());
-      //formik.values.color = color; // set d value of color to d color state
-    }, [dispatch]);
-
+  useEffect(() => {
+    if (getProductId !== undefined) {
+      dispatch(getAProduct(getProductId));
+      img.push(prodImages);
+    } else {
+      dispatch(resetState());
+    }
+  }, [getProductId]);
 
   useEffect(() => {
     if (isSuccess && createdProduct) {
@@ -84,7 +86,6 @@ export default function AddProduct() {
     if (isSuccess && updatedProduct) {
       toast.success('Product Updated Succesfully');
       navigate('/admin/list-product'); //from admin go to list-product
-
     }
     if (isError) {
       toast.error('Something Wrong');
@@ -113,9 +114,12 @@ export default function AddProduct() {
     });
   });
   // console.log(img);
+
+  // this is for images
   useEffect(() => {
-    formik.values.images = img;
-  }, [prodImages]);
+    formik.values.color = colors ? colors : ''; // set d value of color to d color state
+    formik.values.images = img; // set d value of color to d color state
+  }, [prodImages, prodColor]);
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -132,31 +136,32 @@ export default function AddProduct() {
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      // dispatch(login(values)); //pass user into login
-      // alert(JSON.stringify(values));
-      dispatch(createProducts(values)); // create all values in the database
-      // after dispatch reset form
-      formik.resetForm();
-      setColor(null);
-      setTimeout(() => {
+      if (getProductId !== undefined) {
+        const data = { id: getProductId, productData: values };
+        dispatch(updateAProduct(data));
         dispatch(resetState());
-        // navigate('/admin/list-product'); //from admin go to list-product
-      }, 3000);
+      } else {
+        dispatch(createProducts(values)); // create all values in the database
+        // after dispatch reset form
+        formik.resetForm();
+        setColors(null);
+
+        setTimeout(() => {
+          dispatch(resetState());
+        }, 300);
+      }
     },
   });
 
-  // this is for images
-  useEffect(() => {
-    formik.values.color = color ? color : ''; // set d value of color to d color state
-    formik.values.images = img; // set d value of color to d color state
-  }, [color, formik.values, img]);
-
-  const handleColors = (e) => {
-    setColor(e); // set the target in the array
+  const handleChange = (e) => {
+    setColors(e); // set the target in the array
+    console.log(colors);
   };
   return (
     <div>
-      <h3 className="text-4xl font-bold mb-2">Add Product</h3>
+      <h3 className="text-4xl font-bold mb-2">
+        {getProductId !== undefined ? 'Edit' : 'Add'} Product
+      </h3>
       <div>
         {/* <CustomInput type="text" label="Enter Product Title" /> */}
         <form onSubmit={formik.handleSubmit}>
@@ -178,6 +183,7 @@ export default function AddProduct() {
             value={formik.values.description}
             name="description"
             onChange={formik.handleChange('description')}
+            // onBlur={formik.handleBlur('description')}
             className="mb-3"
           />
           <div className="text-red-500 text-start text-[.8rem]">
@@ -222,7 +228,6 @@ export default function AddProduct() {
               <div>{formik.errors.brand}</div>
             ) : null}
           </div>
-
           <select
             name="tags"
             id=""
@@ -241,7 +246,6 @@ export default function AddProduct() {
               <div>{formik.errors.tags}</div>
             ) : null}
           </div>
-
           <select
             name="category"
             value={formik.values.category}
@@ -264,15 +268,17 @@ export default function AddProduct() {
               <div>{formik.errors.category}</div>
             ) : null}
           </div>
-          <Select
-            mode="multiple"
-            allowClear
-            className="w-[100%]"
-            placeholder="Select colors"
-            defaultValue={color}
-            onChange={(i) => handleColors(i)}
-            options={coloropt}
-          />
+            <Select
+              mode="multiple"
+              allowClear
+              className="w-[100%]"
+              placeholder="Select colors"
+              defaultValue={colors}
+              onChange={(i) => handleChange(i)}
+              options={coloropt}
+            />
+        
+
           <div className="text-red-500 text-start text-[.8rem]">
             {formik.touched.color && formik.errors.color ? (
               <div>{formik.errors.color}</div>
@@ -329,7 +335,7 @@ export default function AddProduct() {
             type="submit"
             className="btn bg-green-600 p-4 text-white  my-5 border-0 rounded-lg"
           >
-            Add Product
+            {getProductId !== undefined ? 'Update' : 'Add'} Product
           </button>
         </form>
       </div>

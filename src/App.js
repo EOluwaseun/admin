@@ -62,6 +62,8 @@ function App() {
           <Route path="brand/:id" element={<AddBrand />} />
           <Route path="list-product" element={<ProductList />} />
           <Route path="product" element={<AddProduct />} />
+          <Route path="product/:id" element={<AddProduct />} />
+
         </Route>
       </Routes>
     </Router>

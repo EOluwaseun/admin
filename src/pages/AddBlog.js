@@ -102,7 +102,7 @@ function AddBlog() {
         dispatch(updateABlog(data));
         dispatch(resetState());
       } else {
-        dispatch(createBlogs(values));
+        dispatch(createBlogs(values));  
         formik.resetForm();
         setTimeout(() => {
           dispatch(resetState());
@@ -158,6 +158,7 @@ function AddBlog() {
           value={formik.values.description}
           name="description"
           onChange={formik.handleChange('description')}
+          // onBlur={formik.handleBlur('description')}
           className="mb-3"
         />
         <div className="text-red-500 text-start text-[.8rem]">

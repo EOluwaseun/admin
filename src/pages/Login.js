@@ -58,10 +58,9 @@ function Login() {
             {message.message === 'Rejected' ? 'You are not an admin' : ''}
           </div>
         </div>
-
         <form onSubmit={formik.handleSubmit}>
           <CustomInput
-            type="text"
+            type="email"
             name="email"
             label="Email Address"
             id="email"
@@ -73,7 +72,6 @@ function Login() {
               <div>{formik.errors.email}</div>
             ) : null}
           </div>
-
           <CustomInput
             type="password"
             name="password"
